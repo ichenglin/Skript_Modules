@@ -1,0 +1,47 @@
+# +-------------------+
+# Leaderboard API
+# +-------------------+
+
+# API Settings
+options:
+	# Set hologram-id to your hologram name used for leaderboard.
+ 	# NOTE: hologram must have 12 lines
+	hologram-id: leaderboard
+	# Set hologram-display to text that will be display above leaderboard
+	hologram-display: Leaderboard
+	# Set listener-list to your variable list.
+	# Example: default = {default::*}
+	listener-list: default
+
+# Use the function below to change display value
+# Example: translate UUID to player name
+function leaderboardTranslate(text: text) :: text:
+	return {_text}
+
+# CODE BELOW SHOULD NOT BE CHANGED UNLESS YOU KNOW WHAT YOU ARE DOING
+# CODE BELOW SHOULD NOT BE CHANGED UNLESS YOU KNOW WHAT YOU ARE DOING
+# CODE BELOW SHOULD NOT BE CHANGED UNLESS YOU KNOW WHAT YOU ARE DOING
+# CODE BELOW SHOULD NOT BE CHANGED UNLESS YOU KNOW WHAT YOU ARE DOING
+# CODE BELOW SHOULD NOT BE CHANGED UNLESS YOU KNOW WHAT YOU ARE DOING
+function leaderboardUpdate():
+	execute console command "hd setline {@hologram-id} 1 &e▃▃▃▃▃ &aLeaderboard &e▃▃▃▃▃"
+	loop 10 times:
+		loop {{@listener-list}::*}:
+			if {_used::%loop-index%} is not set:
+				if {_topValue-%loop-number%} is not set:
+					set {_topName-%loop-number%} to "%loop-index%"
+					set {_topValue-%loop-number%} to {{@listener-list}::%loop-index%}
+				else if {_topValue-%loop-number%} < {{@listener-list}::%loop-index%}:
+					set {_topName-%loop-number%} to "%loop-index%"
+					set {_topValue-%loop-number%} to {{@listener-list}::%loop-index%}
+		if {{@listener-list}::%{_topName-%loop-number%}%} is not set:
+			set {_value} to 0
+		else:
+			set {_value} to {{@listener-list}::%{_topName-%loop-number%}%}
+		if {_topName-%loop-number%} is not set:
+			set {_name} to "&cNone"
+		else:
+			set {_name} to leaderboardTranslate({_topName-%loop-number%})
+		execute console command "hd setline {@hologram-id} %(loop-number + 1)% &6%{_name}% &f- &6%{_value}%"
+		set {_used::%{_topName-%loop-number%}%} to true
+	execute console command "hd setline {@hologram-id} 12 &e▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃"
