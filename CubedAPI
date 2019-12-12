@@ -1,18 +1,18 @@
 # Example:
 # - Format: cubedAPI_getBoosters(apiKey[TEXT], returnTimeStamp[BOOLEAN])
 # - Example (Return Time): cubedAPI_getBoosters("ENTER_YOUR_SERVER_API_KEY_HERE", true)
-# - Example (UUID Only): cubedAPI_getBoosters("ENTER_YOUR_SERVER_API_KEY_HERE") or cubedAPI_getBoosters("ENTER_YOUR_SERVER_API_KEY_HERE", false)
+# - Example (UUID Only): ccubedAPI_getBoosters("ENTER_YOUR_SERVER_API_KEY_HERE", false)
 #
 #
 # Return Format:
-# - RETURN_TIME_STAMP = TRUE: <UUID>:<TIME_STAMP>
-# - RETURN_TIME_STAMP = FALSE (DEFAULT): <UUID>
+# - RETURN_TIME_STAMP = TRUE (DEFAULT): <UUID>:<TIME_STAMP>
+# - RETURN_TIME_STAMP = FALSE: <UUID>
 #
 # Time Stamp Format:
 # - Return Type: Milliseconds
 # - CombatAPI: api_unixToDate(<TIME_STAMP> / 1000)
 
-function cubedAPI_getBoosters(apiKey: text, returnTimeStamp: boolean = false) :: texts:
+function cubedAPI_getBoosters(apiKey: text, returnTimeStamp: boolean = true) :: texts:
 	set {_apiLink} to "http://api.playerservers.com/api/?key=%{_apiKey}%"
 	set {_apiRaw} to (text from {_apiLink})
 	if {_apiRaw} contains "[]":
