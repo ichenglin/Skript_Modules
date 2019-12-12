@@ -16,7 +16,7 @@ function cubedAPI_getBoosters(apiKey: text, returnTimeStamp: boolean = false) ::
 	set {_apiLink} to "http://api.playerservers.com/api/?key=%{_apiKey}%"
 	set {_apiRaw} to (text from {_apiLink})
 	if {_apiRaw} contains "[]":
-		return ""
+		return "NO_SERVER_BOOSTERS"
 	set {_apiRawSplit::*} to {_apiRaw} split by "["
 	set {_apiRawSplit::*} to {_apiRawSplit::2} split by "]"
 	replace all " " and "{" and "}" with "" in {_apiRawSplit::1}
