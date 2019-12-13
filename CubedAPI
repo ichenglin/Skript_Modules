@@ -13,8 +13,7 @@
 # - CombatAPI: api_unixToDate(<TIME_STAMP> / 1000)
 
 function cubedAPI_getBoosters(apiKey: text, returnTimeStamp: boolean = true) :: texts:
-	set {_apiLink} to "http://api.playerservers.com/api/?key=%{_apiKey}%"
-	set {_apiRaw} to (text from {_apiLink})
+	set {_apiRaw} to text from "http://api.playerservers.com/api/?key=%{_apiKey}%"
 	if {_apiRaw} contains "[]":
 		return "NO_SERVER_BOOSTERS"
 	set {_apiRawSplit::*} to {_apiRaw} split by "["
