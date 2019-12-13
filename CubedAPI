@@ -1,27 +1,38 @@
 # Example:
-# - Format: cubedAPI_getBoosters(apiKey[TEXT], returnTimeStamp[BOOLEAN])
-# - Example (Return UUID and Time Stamp): cubedAPI_getBoosters("ENTER_YOUR_SERVER_API_KEY_HERE", true)
-# - Example (Return UUID Only): cubedAPI_getBoosters("ENTER_YOUR_SERVER_API_KEY_HERE", false)
+# - Get Boosters:
+#    - Format: cubedAPI_getBoosters(apiKey[TEXT], returnTimeStamp[BOOLEAN])
+#    - Example (Return UUID and Time Stamp): cubedAPI_getBoosters("ENTER_YOUR_SERVER_API_KEY_HERE", true)
+#    - Example (Return UUID Only): cubedAPI_getBoosters("ENTER_YOUR_SERVER_API_KEY_HERE", false)
+# - Get Voters:
+#    - Format: cubedAPI_getVoters(apiKey[TEXT])
+#    - Example: cubedAPI_getVoters("ENTER_YOUR_SERVER_API_KEY_HERE")
 #
 #
 # Return Format:
-# - RETURN_TIME_STAMP = TRUE (DEFAULT): <UUID>:<TIME_STAMP>
-# - RETURN_TIME_STAMP = FALSE: <UUID>
+# - Get Boosters:
+#    - RETURN_TIME_STAMP = TRUE (DEFAULT): <UUID>:<TIME_STAMP>
+#    - RETURN_TIME_STAMP = FALSE: <UUID>
 #
 # Time Stamp Format:
-# - Return Type: Milliseconds
-# - CombatAPI: api_unixToDate(<TIME_STAMP> / 1000)
+# - Get Boosters:
+#    - Return Type: Milliseconds
+#    - CombatAPI: api_unixToDate(<TIME_STAMP> / 1000)
 #
 # Error Code:
-# - SERVER_DATA_NOT_FOUND: Server data is not found, could be caused by invalid apiKey or API is down.
-# - SERVER_BOOSTERS_NOT_FOUND: Server data found but server has no boosters.
+# - Get Boosters:
+#    - SERVER_DATA_NOT_FOUND: Server data is not found, could be caused by invalid apiKey or API is down.
+#    - SERVER_BOOSTERS_NOT_FOUND: Server data found but server has no boosters.
+# - Get Voters:
+#    - -1: Server data is not found, could be caused by invalid apiKey or API is down.
 # - Others: If no error code are returned and final result isn't correct,
-# -         try using the latest version of CubedAPI as the API source
-# -         might get updated to new format, new version is needed to read it correctly.
+#           try using the latest version of CubedAPI as the API source
+#           might get updated to new format, new version is needed to read it correctly.
+
+
 
 function cubedAPI_getBoosters(apiKey: text, returnTimeStamp: boolean = true) :: texts:
 	set {_apiRaw} to text from "http://api.playerservers.com/api/?key=%{_apiKey}%"
-	if {_apiRaw} is not set:
+	if {_apiRaw} contains """error"":":
 		return "SERVER_DATA_NOT_FOUND"
 	if {_apiRaw} contains "[]":
 		return "SERVER_BOOSTERS_NOT_FOUND"
@@ -40,3 +51,16 @@ function cubedAPI_getBoosters(apiKey: text, returnTimeStamp: boolean = true) :: 
 			add "%{_lineSplitResult::1}%" to {_finalResult::*}
 		delete {_lineSplitResult::*}
 	return {_finalResult::*}
+
+function cubedAPI_getVoters(apiKey: text) :: number:
+	set {_apiRaw} to text from "http://api.playerservers.com/api/?key=%{_apiKey}%"
+	if {_apiRaw} contains """error"":":
+		return -1
+	set {_apiRawSplit::*} to {_apiRaw} split by "]"
+	replace all " " and "{" and "}" with "" in {_apiRawSplit::2}
+	set {_backData::*} to {_apiRawSplit::2} split by ","
+	loop {_backData::*}:
+		if {_backData::%loop-index%} contains """votes"":":
+			set {_votesRaw} to {_backData::%loop-index%}
+	set {_votesRawSplit::*} to {_votesRaw} split by """"
+	return ({_votesRawSplit::4} parsed as number)
