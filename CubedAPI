@@ -15,6 +15,9 @@
 # Error Code:
 # - SERVER_DATA_NOT_FOUND: Server data is not found, could be caused by invalid apiKey or API is down.
 # - SERVER_BOOSTERS_NOT_FOUND: Server data found but server has no boosters.
+# - Others: If no error code are returned and final result isn't correct,
+# -         try using the latest version of CubedAPI as the API source
+# -         might get updated to new format, new version is needed to read it correctly.
 
 function cubedAPI_getBoosters(apiKey: text, returnTimeStamp: boolean = true) :: texts:
 	set {_apiRaw} to text from "http://api.playerservers.com/api/?key=%{_apiKey}%"
