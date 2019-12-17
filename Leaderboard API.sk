@@ -24,7 +24,7 @@ function leaderboardTranslate(text: text) :: text:
 # CODE BELOW SHOULD NOT BE CHANGED UNLESS YOU KNOW WHAT YOU ARE DOING
 # CODE BELOW SHOULD NOT BE CHANGED UNLESS YOU KNOW WHAT YOU ARE DOING
 function leaderboardUpdate():
-	execute console command "hd setline {@hologram-id} 1 &e▃▃▃▃▃ &aLeaderboard &e▃▃▃▃▃"
+	execute console command "hd setline {@hologram-id} 1 &e▃▃▃▃▃ &a{@hologram-display} &e▃▃▃▃▃"
 	loop 10 times:
 		loop {{@listener-list}::*}:
 			if {_used::%loop-index%} is not set:
