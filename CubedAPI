@@ -1,3 +1,5 @@
+# Code Source: https://github.com/fireclaws9/Minecraft_Skript-API/blob/master/CubedAPI
+#
 # Example:
 # - Get Boosters:
 #    - Format: cubedAPI_getBoosters(apiKey[TEXT], returnTimeStamp[BOOLEAN])
