@@ -2,7 +2,7 @@
 # Code Source: https://github.com/fireclaws9/Minecraft_Skript-API/blob/master/StringDatasAPI
 #
 
-function stringDatasAPI_newData(newDataName: text, newDataValue: text, oldData: text = "") :: text:
+function stringDatasAPI_setData(newDataName: text, newDataValue: text, oldData: text = "") :: text:
 	replace all "[" with "_" in {_newDataName}
 	set {_convertedDataString} to stringDatasAPI_system_convertString({_newDataValue})
 	if {_oldData} is "":
@@ -26,7 +26,7 @@ function stringDatasAPI_removeData(dataString: text, dataName: text) :: text:
 	set {_newDataString} to join {_oldDataSplit::*} with delimiter ":"
 	return {_newDataString}
 
-function stringDatasAPI_readData(dataString: text, dataName: text) :: text:
+function stringDatasAPI_getData(dataString: text, dataName: text) :: text:
 	set {_oldDataSplit::*} to stringDatasAPI_system_splitDatas({_dataString}, ":")
 	loop (amount of {_oldDataSplit::*}) times:
 		set {_loopDataSplit::*} to {_oldDataSplit::%loop-number%} split by "["
@@ -39,7 +39,15 @@ function stringDatasAPI_readData(dataString: text, dataName: text) :: text:
 	set {_dataValue} to join {_split::*} with ""
 	return stringDatasAPI_system_translateString({_dataValue})
 
-function stringDatasAPI_dataNames(dataString: text) :: texts:
+function stringDatasAPI_isSet(dataString: text, dataName: text) :: boolean:
+	set {_oldDataSplit::*} to stringDatasAPI_system_splitDatas({_dataString}, ":")
+	loop (amount of {_oldDataSplit::*}) times:
+		set {_loopDataSplit::*} to {_oldDataSplit::%loop-number%} split by "["
+		if {_loopDataSplit::1} is {_dataName}:
+			return true
+	return false
+
+function stringDatasAPI_getDataNames(dataString: text) :: texts:
 	set {_oldDataSplit::*} to stringDatasAPI_system_splitDatas({_dataString}, ":")
 	loop (amount of {_oldDataSplit::*}) times:
 		set {_loopDataSplit::*} to {_oldDataSplit::%loop-number%} split by "["
