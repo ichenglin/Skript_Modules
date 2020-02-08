@@ -39,6 +39,13 @@ function stringDatasAPI_readData(dataString: text, dataName: text) :: text:
 	set {_dataValue} to join {_split::*} with ""
 	return stringDatasAPI_system_translateString({_dataValue})
 
+function stringDatasAPI_dataNames(dataString: text) :: texts:
+	set {_oldDataSplit::*} to stringDatasAPI_system_splitDatas({_dataString}, ":")
+	loop (amount of {_oldDataSplit::*}) times:
+		set {_loopDataSplit::*} to {_oldDataSplit::%loop-number%} split by "["
+		add {_loopDataSplit::1} to {_returnNames::*}
+	return {_returnNames::*}
+
 function stringDatasAPI_system_convertString(text: text) :: text:
 	set {_stringSplit::*} to {_text} split by ""
 	loop {_stringSplit::*}:
