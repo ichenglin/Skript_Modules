@@ -1,5 +1,5 @@
 # Minecraft_Skript-API
-Some API I feel useful and save time for script coders.
+Check this out for API usage and examples.
 
 # String Datas API
 	+---------------------------------------------[USAGE]---------------------------------------------+
