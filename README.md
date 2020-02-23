@@ -52,14 +52,6 @@ Check this out for API usage and examples.
 			# Set data named BALANCE, HEALTH, HUNGER, and IQ for executor
 
 	+-------------------------------------------------------------------------------------------------+
-
-# CombatAPI
-	skUnity: https://forums.skunity.com/resources/combatapi.864/
-	spigotMC: https://www.spigotmc.org/resources/combatapi.71316/
-
-# LeaderboardAPI
-	API that help creating a leaderboard using the Holographic Displays plugin.
-
 # CubedAPI
 	+---------------------------------------------[USAGE]---------------------------------------------+
 
