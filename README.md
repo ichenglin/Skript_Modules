@@ -61,6 +61,28 @@ Check this out for API usage and examples.
 	API that help creating a leaderboard using the Holographic Displays plugin.
 
 # CubedAPI
-	API made to help script coders in CubedCraft,
-	a Minecraft free server hosting server,
-	to access their server's informations fast.
+	+---------------------------------------------[USAGE]---------------------------------------------+
+
+	[Get Boosters List] cubedAPI_getBoosters( API_KEY , RETURN_UNIX_TIME_STAMP [@NULLABLE] )
+	[Get Votes] cubedAPI_getVoters( API_KEY )
+	
+	+-------------------------------------------------------------------------------------------------+
+	
+	
+	+--------------------------------------------[EXAMPLE]--------------------------------------------+
+	# Example For Getting Boosters
+	
+	command /boosters:
+	trigger:
+		send "&aBoosters:" to executor
+		set {_boostersRaw::*} to cubedAPI_getBoosters("TYPE_YOUR_SERVER_API_KEY_HERE", true)
+		loop {_boostersRaw::*}:
+			set {_loopBoosterData::*} to {_boostersRaw::%loop-index%} split by ":"
+			set {_boosterNames::*} to api_getPlayerName({_loopBoosterData::1}, false)
+			set {_boosterNamesAmount} to amount of {_boosterNames::*}
+			set {_boosterName} to {_boosterNames::%{_boosterNamesAmount}%}
+			set {_boostTimeRaw} to (({_loopBoosterData::2} parsed as number) / 1000)
+			set {_boostTime} to api_unixToDate({_boostTimeRaw})
+			send "&a- &e%{_boosterName}% &a(&e%{_boostTime}%&a)" to executor
+
+	+-------------------------------------------------------------------------------------------------+
