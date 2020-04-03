@@ -1,7 +1,3 @@
-#
-# Code Source: https://github.com/fireclaws9/Minecraft_Skript-API/blob/master/StringDatasAPI
-#
-
 function stringDatasAPI_setData(newDataName: text, newDataValue: text, oldData: text = "") :: text:
 	replace all "[" with "_" in {_newDataName}
 	set {_convertedDataString} to stringDatasAPI_system_convertString({_newDataValue})
