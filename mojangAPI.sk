@@ -1,9 +1,4 @@
-# +---------------------------+
-#    API made by CombatMC
-#
-# +---------------------------+
-
-function api_getPlayerName(uuid: text, returnUNIX: boolean=false) :: texts:
+function mojangAPI_getPlayerName(uuid: text, returnUNIX: boolean=false) :: texts:
 	replace all "-" with "" in {_uuid}
 	set {_nameList} to text from "https://api.mojang.com/user/profiles/%{_uuid}%/names"
 	set {_draft::*} to {_nameList} split by """"
@@ -12,7 +7,6 @@ function api_getPlayerName(uuid: text, returnUNIX: boolean=false) :: texts:
 	while ({_loopToggle}):
 		if {_draft::%{_getDraft}%} is "name":
 			add 2 to {_getDraft}
-#			send "%{_getDraft}%: %{_draft::%{_getDraft}%}%" to all players
 			add "%{_draft::%{_getDraft}%}%" to {_names::*}
 			add 2 to {_getDraft}
 		else if {_draft::%{_getDraft}%} is "changedToAt":
@@ -29,37 +23,12 @@ function api_getPlayerName(uuid: text, returnUNIX: boolean=false) :: texts:
 			set {_loopToggle} to false
 	return {_names::*}
 
-function api_getPlayerUUID(name: text) :: text:
+function mojangAPI_getPlayerUUID(name: text) :: text:
 	set {_userData} to text from "https://api.mojang.com/users/profiles/minecraft/%{_name}%"
 	set {_draft::*} to {_userData} split by """"
 	return {_draft::4}
 
-function api_getNumberDisplay(number: number) :: text:
-	set {_times} to 1
-	while (true):
-		if {_number} < (1000 ^ {_times}):
-			set {_number} to ({_number} / (1000 ^ ({_times} - 1)))
-			exit 1 loop
-		add 1 to {_times}
-	if {_times} is 1:
-		set {_display} to ""
-	else if {_times} is 2:
-		set {_display} to "K"
-	else if {_times} is 3:
-		set {_display} to "M"
-	else if {_times} is 4:
-		set {_display} to "B"
-	else if {_times} is 5:
-		set {_display} to "T"
-	else if {_times} is 6:
-		set {_display} to "Qa"
-	else if {_times} is 7:
-		set {_display} to "Qi"
-	else:
-		return "FAIL"
-	return "%{_number}%%{_display}%"
-
-function api_unixToDate(UNIX: number) :: date:
+function mojangAPI_unixToDate(UNIX: number) :: date:
 	set {_date} to date(1970,1,1)
 	if {_UNIX} > 0:
 		add ("%{_UNIX}% seconds" parsed as time span) to {_date}
