@@ -100,6 +100,7 @@ function stringDatasAPI_system_splitDatas(dataText: text, splitChar: text, remov
 	return {_returnTexts::*}
 
 function stringDatasAPI_system_checkIllegalCharacters(text: text) :: boolean:
-	if {_text} contains "\" or ":" or "[" or "]" or ",":
-		return true
-	return false
+	set {_text} to regex replace all pattern "[a-z,A-Z,0-9]" with "" in {_text}
+	if {_text} is "":
+		return false
+	return true
