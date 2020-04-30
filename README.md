@@ -74,7 +74,10 @@ Check this out for API usage and examples.
 			set {_boosterNamesAmount} to amount of {_boosterNames::*}
 			set {_boosterName} to {_boosterNames::%{_boosterNamesAmount}%}
 			set {_boostTimeRaw} to (({_loopBoosterData::2} parsed as number) / 1000)
-			set {_boostTime} to api_unixToDate({_boostTimeRaw})
+			set {_boostTime} to mojangAPI_unixToDate(({_boostTimeRaw})
+			# --------------------------------------------------------------------
+			# You will need to use mojangAPI for function mojangAPI_unixToDate()
+			# --------------------------------------------------------------------
 			send "&a- &e%{_boosterName}% &a(&e%{_boostTime}%&a)" to executor
 
 	+-------------------------------------------------------------------------------------------------+
