@@ -55,7 +55,7 @@ Check this out for API usage and examples.
 # CubedAPI
 	+---------------------------------------------[USAGE]---------------------------------------------+
 
-	[Get Boosters List] cubedAPI_getBoosters( API_KEY , RETURN_UNIX_TIME_STAMP [@NULLABLE] )
+	[Get Boosters List (Boost Time Optional)] cubedAPI_getBoosters( API_KEY , RETURN_UNIX_TIME_STAMP [@NULLABLE] )
 	[Get Votes] cubedAPI_getVoters( API_KEY )
 	
 	+-------------------------------------------------------------------------------------------------+
@@ -65,19 +65,18 @@ Check this out for API usage and examples.
 	# Example For Getting Boosters
 	
 	command /boosters:
-	trigger:
-		send "&aBoosters:" to executor
-		set {_boostersRaw::*} to cubedAPI_getBoosters("TYPE_YOUR_SERVER_API_KEY_HERE", true)
-		loop {_boostersRaw::*}:
-			set {_loopBoosterData::*} to {_boostersRaw::%loop-index%} split by ":"
-			set {_boosterNames::*} to api_getPlayerName({_loopBoosterData::1}, false)
-			set {_boosterNamesAmount} to amount of {_boosterNames::*}
-			set {_boosterName} to {_boosterNames::%{_boosterNamesAmount}%}
-			set {_boostTimeRaw} to (({_loopBoosterData::2} parsed as number) / 1000)
-			set {_boostTime} to mojangAPI_unixToDate(({_boostTimeRaw})
-			# --------------------------------------------------------------------
-			# You will need to use mojangAPI for function mojangAPI_unixToDate()
-			# --------------------------------------------------------------------
-			send "&a- &e%{_boosterName}% &a(&e%{_boostTime}%&a)" to executor
+		trigger:
+			set {_boostersRaw::*} to cubedAPI_getBoosters("YOUR_SERVER_API_KEY_HERE", true)
+			set {_boostersAmount} to ((amount of {_boostersRaw::*}) / 2)
+			if {_boostersAmount} <= 0:
+				send "&cThis server doesn't have any boosters! :(" to executor
+				stop
+			send "&aBoosters: (&e%{_boostersAmount}%&a)" to executor
+			loop {_boostersAmount} times:
+				set {_boosterID} to ((loop-number * 2) - 1)
+				set {_dateID} to (loop-number * 2)
+				set {_booster} to {_boostersRaw::%{_boosterID}%}
+				set {_date} to {_boostersRaw::%{_dateID}%}
+				send " &e##%loop-number% &a- &e%{_booster}% &a(&e%{_date}%&a)" to executor
 
 	+-------------------------------------------------------------------------------------------------+
