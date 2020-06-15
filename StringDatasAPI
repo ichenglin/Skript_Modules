@@ -9,8 +9,9 @@ function stringDatasAPI_setData(newDataName: text, newDataValue: text, oldData: 
 			set {_loopDataSplit::*} to {_oldDataSplit::%loop-number%} split by "["
 			if {_loopDataSplit::1} is {_newDataName}:
 				delete {_oldDataSplit::%loop-number%}
+		add "%{_newDataName}%[%{_convertedDataString}%]" to {_oldDataSplit::*}
 		set {_removedNameString} to join {_oldDataSplit::*} with delimiter ":"
-		return "%{_removedNameString}%:%{_newDataName}%[%{_convertedDataString}%]"
+		return {_removedNameString}
 
 function stringDatasAPI_removeData(dataString: text, dataName: text) :: text:
 	set {_oldDataSplit::*} to stringDatasAPI_system_splitDatas({_dataString}, ":")
