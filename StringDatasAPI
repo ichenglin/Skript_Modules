@@ -20,6 +20,8 @@ function stringDatasAPI_removeData(dataString: text, dataName: text) :: text:
 		if {_loopDataSplit::1} is {_dataName}:
 			delete {_oldDataSplit::%loop-number%}
 			exit 1 loop
+	if (amount of {_oldDataSplit::*}) <= 0:
+		return ""
 	set {_newDataString} to join {_oldDataSplit::*} with delimiter ":"
 	return {_newDataString}
 
