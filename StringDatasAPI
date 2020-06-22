@@ -1,7 +1,9 @@
 function stringDatasAPI_setData(newDataName: text, newDataValue: text, oldData: text = "") :: text:
 	replace all "[" with "_" in {_newDataName}
 	set {_convertedDataString} to stringDatasAPI_system_convertString({_newDataValue})
-	if {_oldData} is "":
+	if {_oldData} is not set:
+		return "%{_newDataName}%[%{_convertedDataString}%]"
+	else if {_oldData} is "":
 		return "%{_newDataName}%[%{_convertedDataString}%]"
 	else:
 		set {_oldDataSplit::*} to stringDatasAPI_system_splitDatas({_oldData}, ":")
