@@ -1,4 +1,4 @@
-function unixApi_dateToUnix(date: date) :: number:
+function unixAPI_dateToUnix(date: date) :: number:
 	set {_unixEpoch} to date(1970,1,1)
 	set {_compareDate} to (difference between {_date} and {_unixEpoch})
 	set {_unitStage} to 9
@@ -13,7 +13,7 @@ function unixApi_dateToUnix(date: date) :: number:
 			remove 1 from {_unitStage}
 	return {_recordedSeconds}
 
-function unixApi_unixToDate(seconds: number) :: date:
+function unixAPI_unixToDate(seconds: number) :: date:
 	set {_convertedDate} to date(1970,1,1)
 	add ("%{_seconds}% seconds" parsed as time span) to {_convertedDate}
 	return {_convertedDate}
