@@ -5,7 +5,7 @@ function unixApi_dateToUnix(date: date) :: number:
 	set {_recordedSeconds} to 0
 	while (true):
 		set {_unit} to (10 ^ {_unitStage})
-		if {_compareDate} > ("%({_recordedSeconds} + {_unit})% seconds" parsed as time span):
+		if {_compareDate} >= ("%({_recordedSeconds} + {_unit})% seconds" parsed as time span):
 			add {_unit} to {_recordedSeconds}
 		else if {_unitStage} is 0:
 			exit 1 loop
