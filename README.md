@@ -52,7 +52,7 @@ Check this out for API usage and examples.
 			# Set data named BALANCE, HEALTH, HUNGER, and IQ for executor
 
 	+-------------------------------------------------------------------------------------------------+
-# CubedAPI
+# Cubed API
 	+---------------------------------------------[USAGE]---------------------------------------------+
 
 	[Get Boosters List (Boost Time Optional)] cubedAPI_getBoosters( API_KEY , RETURN_UNIX_TIME_STAMP [@NULLABLE] )
@@ -79,4 +79,11 @@ Check this out for API usage and examples.
 				set {_date} to {_boostersRaw::%{_dateID}%}
 				send " &e##%loop-number% &a- &e%{_booster}% &a(&e%{_date}%&a)" to executor
 
+	+-------------------------------------------------------------------------------------------------+
+# Unix API
+	+---------------------------------------------[USAGE]---------------------------------------------+
+
+	[Date To Unix] unixAPI_dateToUnix( DATE )
+	[Unix To Date] unixAPI_unixToDate( UNIX )
+	
 	+-------------------------------------------------------------------------------------------------+
