@@ -1,8 +1,10 @@
 # Minecraft_Skript-API
 Check this out for API usage and examples.
 
-# String Datas API
+# String Datas APIc
 	+---------------------------------------------[USAGE]---------------------------------------------+
+
+	(Intended to be used for servers without JSON parsing Skript addons)
 
 	Source: https://github.com/fireclaws9/Minecraft_Skript-API/blob/master/StringDatasAPI
 	
@@ -52,36 +54,10 @@ Check this out for API usage and examples.
 			# Set data named BALANCE, HEALTH, HUNGER, and IQ for executor
 
 	+-------------------------------------------------------------------------------------------------+
-# Cubed API
-	+---------------------------------------------[USAGE]---------------------------------------------+
-
-	[Get Boosters List (Boost Time Optional)] cubedAPI_getBoosters( API_KEY , RETURN_UNIX_TIME_STAMP [@NULLABLE] )
-	[Get Votes] cubedAPI_getVoters( API_KEY )
-	
-	+-------------------------------------------------------------------------------------------------+
-	
-	
-	+--------------------------------------------[EXAMPLE]--------------------------------------------+
-	# Example For Getting Boosters
-	
-	command /boosters:
-		trigger:
-			set {_boostersRaw::*} to cubedAPI_getBoosters("YOUR_SERVER_API_KEY_HERE", true)
-			set {_boostersAmount} to ((amount of {_boostersRaw::*}) / 2)
-			if {_boostersAmount} <= 0:
-				send "&cThis server doesn't have any boosters! :(" to executor
-				stop
-			send "&aBoosters: (&e%{_boostersAmount}%&a)" to executor
-			loop {_boostersAmount} times:
-				set {_boosterID} to ((loop-number * 2) - 1)
-				set {_dateID} to (loop-number * 2)
-				set {_booster} to {_boostersRaw::%{_boosterID}%}
-				set {_date} to {_boostersRaw::%{_dateID}%}
-				send " &e##%loop-number% &a- &e%{_booster}% &a(&e%{_date}%&a)" to executor
-
-	+-------------------------------------------------------------------------------------------------+
 # Unix API
 	+---------------------------------------------[USAGE]---------------------------------------------+
+
+	(Intended to be used for servers running outdated Skript which does not support UNIX)
 
 	[Date To Unix] unixAPI_dateToUnix( DATE )
 	[Unix To Date] unixAPI_unixToDate( UNIX )
