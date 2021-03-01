@@ -1,7 +1,7 @@
 # Minecraft_Skript-API
 Check this out for API usage and examples.
 
-# String Datas APIc
+# String Datas API
 	+---------------------------------------------[USAGE]---------------------------------------------+
 
 	(Intended to be used for servers without JSON parsing Skript addons)
