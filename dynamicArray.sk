@@ -1,0 +1,117 @@
+function dynamicArray_attach(arrayText: text, namespace: text, value: text) :: text:
+	set {_cacheId} to dynamicArray_system_loadCache({_arrayText})
+	dynamicArray_system_writeCache({_cacheId}, {_namespace}, {_value})
+	set {_result} to dynamicArray_system_readCache({_cacheId})
+	set {_cacheRemoval} to dynamicArray_system_unloadCache({_cacheId})
+	return {_result}
+
+function dynamicArray_wipe(arrayText: text, namespaceParentDirectory: text = "", queryCaseSensitive: boolean = false) :: text:
+	set {_cacheId} to dynamicArray_system_loadCache({_arrayText})
+	set {_matchesNamespaceParentDirectory::*} to dynamicArray_system_matchesNamespace({_cacheId}, {_namespaceParentDirectory}, {_queryCaseSensitive})
+	loop {_matchesNamespaceParentDirectory::*}:
+		dynamicArray_system_deleteCache({_cacheId}, loop-value)
+	set {_result} to dynamicArray_system_readCache({_cacheId})
+	set {_cacheRemoval} to dynamicArray_system_unloadCache({_cacheId})
+	return {_result}
+
+
+function dynamicArray_directory(arrayText: text, namespaceParentDirectory: text = "", queryCaseSensitive: boolean = false) :: texts:
+	set {_cacheId} to dynamicArray_system_loadCache({_arrayText})
+	set {_matchesNamespaceParentDirectory::*} to dynamicArray_system_matchesNamespace({_cacheId}, {_namespaceParentDirectory}, {_queryCaseSensitive})
+	set {_cacheRemoval} to dynamicArray_system_unloadCache({_cacheId})
+	return {_matchesNamespaceParentDirectory::*}
+
+function dynamicArray_memoryLeakReport(queryMaximumProcessPerTick: number = 300):
+	add "[DynamicArray Memory Leak Report]" to {_dynamicArrayMemoryLeakReport::*}
+	set {_loopIndex} to 0
+	loop {dynamicArray_systemCache::*}:
+		add 1 to {_loopIndex}
+		if loop-index matches "^\$":
+			add loop-index to {_dynamicArraySystemCache::*}
+		if floor({_loopIndex} / {_queryMaximumProcess}) is ({_loopIndex} / {_queryMaximumProcessPerTick}):
+			wait 1 tick
+	add "+ Total Cache: %amount of {dynamicArray_systemCache::*}%%nl%+ System Cache: %amount of {_dynamicArraySystemCache::*}%%nl%+ (all cache should be wiped after process)" to {_dynamicArrayMemoryLeakReport::*}
+	add "[DynamicArray Memory Leak Report]" to {_dynamicArrayMemoryLeakReport::*}
+	set {_finalReport} to join {_dynamicArrayMemoryLeakReport::*} with delimiter (nl)
+	send {_finalReport} to all players
+
+function dynamicArray_system_loadCache(arrayText: text) :: text:
+	set {_arrayTextRawContent::*} to {_arrayText} split by ":"
+	set {_arrayTextLength} to (amount of {_arrayTextRawContent::*})
+	set {_cacheId} to dynamicArray_system_newCacheId()
+	set {dynamicArray_systemCache::$%{_cacheId}%_RAW} to {_arrayText}
+	loop floor({_arrayTextLength} / 2) times:
+		set {_loopArrayTextNamespaceIndex} to (loop-number * 2 - 1)
+		set {_loopArrayTextValueIndex} to (loop-number * 2)
+		if {_arrayTextRawContent::%{_loopArrayTextNamespaceIndex}%} is not "DynamicArray_NamespaceLayers":
+			set {_loopCacheNamespace} to "%{_cacheId}%_%{_arrayTextRawContent::%{_loopArrayTextNamespaceIndex}%}%"
+			set {dynamicArray_systemCache::%{_loopCacheNamespace}%} to {_arrayTextRawContent::%{_loopArrayTextValueIndex}%}
+			set {_arrayTextOverallNamespace} to (check [{_arrayTextOverallNamespace} is set] ? "%{_arrayTextOverallNamespace}%:%{_arrayTextRawContent::%{_loopArrayTextNamespaceIndex}%}%" : {_arrayTextRawContent::%{_loopArrayTextNamespaceIndex}%})
+	set {dynamicArray_systemCache::$%{_cacheId}%_NAMESPACE} to {_arrayTextOverallNamespace}
+	return {_cacheId}
+
+function dynamicArray_system_unloadCache(cacheId: text) :: text:
+	set {_beforeRemovalCacheAmount} to (amount of {dynamicArray_systemCache::*})
+	set {_arrayTextOverallNamespace::*} to {dynamicArray_systemCache::$%{_cacheId}%_NAMESPACE} split by ":"
+	loop {_arrayTextOverallNamespace::*}:
+		set {_loopCacheNamespace} to "%{_cacheId}%_%loop-value%"
+		delete {dynamicArray_systemCache::%{_loopCacheNamespace}%}
+	delete {dynamicArray_systemCache::%{_cacheId}%}
+	delete {dynamicArray_systemCache::$%{_cacheId}%_RAW}
+	delete {dynamicArray_systemCache::$%{_cacheId}%_NAMESPACE}
+	set {_afterRemovalCacheAmount} to (amount of {dynamicArray_systemCache::*})
+	return "deleted %({_beforeRemovalCacheAmount} - {_afterRemovalCacheAmount})% cache data (%{_afterRemovalCacheAmount}% remaining)"
+
+function dynamicArray_system_readCache(cacheId: text) :: text:
+	set {_arrayTextOverallNamespace::*} to {dynamicArray_systemCache::$%{_cacheId}%_NAMESPACE} split by ":"
+	loop {_arrayTextOverallNamespace::*}:
+		set {_loopCacheNamespacePath::*} to loop-value split by "_"
+		set {_loopCacheNamespacePathLayer} to (amount of {_loopCacheNamespacePath::*})
+		set {_loopCacheNamespace} to "%{_cacheId}%_%loop-value%"
+		set {_loopCacheContent} to "%loop-value%:%{dynamicArray_systemCache::%{_loopCacheNamespace}%}%"
+		set {_arrayTextNamespaceLayers} to (check [{_arrayTextNamespaceLayers} > {_loopCacheNamespacePathLayer}] ? {_arrayTextNamespaceLayers} : {_loopCacheNamespacePathLayer})
+		set {_arrayTextContentBody} to (check [{_arrayTextContentBody} is set] ? "%{_arrayTextContentBody}%:%{_loopCacheContent}%" : {_loopCacheContent})
+	return "DynamicArray_NamespaceLayers:%{_arrayTextNamespaceLayers}%:%{_arrayTextContentBody}%"
+
+function dynamicArray_system_writeCache(cacheId: text, namespace: text, value: text):
+	set {_cacheNamespace} to "%{_cacheId}%_%{_namespace}%"
+	if {dynamicArray_systemCache::%{_cacheNamespace}%} is not set:
+		set {dynamicArray_systemCache::$%{_cacheId}%_NAMESPACE} to "%{dynamicArray_systemCache::$%{_cacheId}%_NAMESPACE}%:%{_namespace}%"
+	set {dynamicArray_systemCache::%{_cacheNamespace}%} to {_value}
+
+function dynamicArray_system_deleteCache(cacheId: text, namespaces: texts):
+	set {_arrayTextOverallNamespace::*} to {dynamicArray_systemCache::$%{_cacheId}%_NAMESPACE} split by ":"
+	loop {_arrayTextOverallNamespace::*}:
+		set {_arrayTextRegisteredNamespaces::%loop-value%} to true
+	loop {_namespaces::*}:
+		delete {dynamicArray_systemCache::%{_cacheId}%_%loop-value%}
+		delete {_arrayTextRegisteredNamespaces::%loop-value%}
+	loop {_arrayTextOverallNamespace::*}:
+		if {_arrayTextRegisteredNamespaces::%loop-value%} is not set:
+			delete {_arrayTextOverallNamespace::%loop-index%}
+	set {dynamicArray_systemCache::$%{_cacheId}%_NAMESPACE} to join {_arrayTextOverallNamespace::*} with delimiter ":"
+
+function dynamicArray_system_newCacheId(cacheIdLength: number = 16) :: text:
+	set {_cacheAvailableCharactersList} to "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	set {_cacheAvailableCharacters::*} to {_cacheAvailableCharactersList} split by ""
+	while (true):
+		delete {_generatedCacheId}
+		loop {_cacheIdLength} times:
+			set {_randomAvailableCharacterIndex} to (random integer between 1 and (length of {_cacheAvailableCharactersList}))
+			set {_generatedCacheId} to (check [{_generatedCacheId} is set] ? "%{_generatedCacheId}%%{_cacheAvailableCharacters::%{_randomAvailableCharacterIndex}%}%" : {_cacheAvailableCharacters::%{_randomAvailableCharacterIndex}%})
+		if {dynamicArray_systemCache::$%{_generatedCacheId}%_RAW} is not set:
+			exit 1 loop
+	return {_generatedCacheId}
+
+function dynamicArray_system_matchesNamespace(cacheId: text, namespaceParentDirectory: text = "", queryCaseSensitive: boolean = false) :: texts:
+	set {_arrayTextOverallNamespace::*} to {dynamicArray_systemCache::$%{_cacheId}%_NAMESPACE} split by ":"
+	loop {_arrayTextOverallNamespace::*}:
+		if {_queryCaseSensitive} is true:
+			set {_queryValue} to loop-value
+			set {_queryMatch} to "^%{_namespaceParentDirectory}%[\w_]*"
+		else:
+			set {_queryValue} to loop-value in upper case
+			set {_queryMatch} to "^%{_namespaceParentDirectory} in upper case%[\w_]*"
+		if {_queryValue} matches {_queryMatch}:
+			add loop-value to {_queryResults::*}
+	return {_queryResults::*}
