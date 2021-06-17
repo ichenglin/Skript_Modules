@@ -3,10 +3,8 @@ Check this out for API usage and examples.
 
 # Image Printer API
 	+---------------------------------------------[USAGE]---------------------------------------------+
-
-	(Intended to be used for servers without JSON parsing Skript addons)
-
-	Source: https://github.com/fireclaws9/Minecraft_Skript-API/blob/master/StringDatasAPI
+	
+	https://github.com/fireclaws9/Minecraft_Skript-Modules/blob/master/imagePrinter.sk
 	
 	[Paste Image] imagePrinter_pasteImageByUrl( IMAGE_URL , COLOR_SAMPLES , PASTE_LOCATION , RESIZE_WIDTH [@NULLABLE], RESIZE_HEIGHT [@NULLABLE])
 	
