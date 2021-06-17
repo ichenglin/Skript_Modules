@@ -1,0 +1,58 @@
+on script load:
+	imagePrinter_system_initialSettings()
+
+function imagePrinter_pasteImageByUrl(url: text, samples: number, pasteLocation: location, resizeWidth: number = 0, resizeHeight: number = 0) :: text:
+	set {_asciiEncodedUrl} to imagePrinter_system_encodeUrlWithAscii({_url})
+	set {_schematicRequest} to text from url "https://runtimecloud.com/api/image-to-schematic/%{_asciiEncodedUrl}%/%{_samples}%/%{_resizeWidth}%/%{_resizeHeight}%"
+	map json {_schematicRequest} to {_schematic::*}
+	if {_schematic::error} is true:
+		return "&c[Image Printer] Error: %{_schematic::message}%."
+	imagePrinter_system_pasteSchematic({_pasteLocation}, {_schematic::blocks::*}, {_schematic::dimension::width}, {_schematic::dimension::height})
+	return "&a[Image Printer] Success: %amount of {_schematic::blocks::*}% blocks detected."
+
+function imagePrinter_system_encodeUrlWithAscii(url: text) :: text:
+	set {_urlSplit::*} to {_url} split by ""
+	set {_encoded} to ""
+	loop {_urlSplit::*}:
+		set {_asciiEncodedCharacter} to {imagePrinter_systemSettings::ASCII_ENCODED_%loop-value%}
+		set {_newCharacter} to (check [ {_asciiEncodedCharacter} is set] ?  {_asciiEncodedCharacter} : loop-value)
+		set {_encoded} to "%{_encoded}%%{_newCharacter}%"
+		delete {_asciiEncodedCharacter}
+	return {_encoded}
+
+function imagePrinter_system_pasteSchematic(beginLocation: location, blocks: texts, schematicWidth: number, schematicHeight: number, blocksPerTick: number = 100):
+	loop {_schematicHeight} times:
+		loop {_schematicWidth} times:
+			set {_loopBlockId} to (loop-number-2 + ((loop-number-1) * {_schematicWidth}))
+			set {_xOffset} to loop-number-2
+			set {_zOffset} to loop-number-1
+			set {_loopBlockLocation} to {_beginLocation}
+			set {_loopBlockLocation}'s x coords to (({_loopBlockLocation}'s x coords) + {_xOffset})
+			set {_loopBlockLocation}'s z coords to (({_loopBlockLocation}'s z coords) + {_zOffset})
+			set block at {_loopBlockLocation} to ("%{_blocks::%{_loopBlockId}%}%" parsed as item)
+			if floor({_loopBlockId} / {_blocksPerTick}) is ({_loopBlockId} / {_blocksPerTick}):
+				wait 1 tick
+
+function imagePrinter_system_initialSettings():
+	delete {imagePrinter_systemSettings::*}
+	add " " and "!" and """" and "##" and "$" and "%%" and "&" and "'" and "(" and ")" and "*" and "+" and "," and "-" and "." and "/" to {_asciiEncodeSequence::*}
+	loop 10 times:
+		add false to {_asciiEncodeSequence::*}
+	add ":" and ";" and "<" and "=" and ">" and "?" and "@" to {_asciiEncodeSequence::*}
+	loop 26 times:
+		add false to {_asciiEncodeSequence::*}
+	add "[" and "\" and "]" and "^" and "_" and "`" to {_asciiEncodeSequence::*}
+	loop 26 times:
+		add false to {_asciiEncodeSequence::*}
+	add "{" and "|" and "}" and "~" to {_asciiEncodeSequence::*}
+	loop {_asciiEncodeSequence::*}:
+		if loop-value is not false:
+			set {_characterSequenceIndex} to (loop-index parsed as number)
+			set {imagePrinter_systemSettings::ASCII_ENCODED_%loop-value%} to imagePrinter_system_initialSettings_characterIndexToAsciiEncoded({_characterSequenceIndex})
+
+function imagePrinter_system_initialSettings_characterIndexToAsciiEncoded(index: number) :: text:
+	set {_encodedIndexSequence::*} to "0" and "1" and "2" and "3" and "4" and "5" and "6" and "7" and "8" and "9" and "A" and "B" and "C" and "D" and "E" and "F"
+	set {_encodedIndexAmount} to (amount of {_encodedIndexSequence::*})
+	set {_childIndex} to (mod(({_index} - 1), {_encodedIndexAmount}) + 1)
+	set {_parentIndex} to ((({_index} - {_childIndex}) / {_encodedIndexAmount}) + 3)
+	return "%%%{_encodedIndexSequence::%{_parentIndex}%}%%{_encodedIndexSequence::%{_childIndex}%}%"
