@@ -1,6 +1,36 @@
 # Minecraft_Skript-API
 Check this out for API usage and examples.
 
+# Image Printer API
+	+---------------------------------------------[USAGE]---------------------------------------------+
+
+	(Intended to be used for servers without JSON parsing Skript addons)
+
+	Source: https://github.com/fireclaws9/Minecraft_Skript-API/blob/master/StringDatasAPI
+	
+	[Paste Image] imagePrinter_pasteImageByUrl( IMAGE_URL , COLOR_SAMPLES , PASTE_LOCATION , RESIZE_WIDTH [@NULLABLE], RESIZE_HEIGHT [@NULLABLE])
+	
+	+-------------------------------------------------------------------------------------------------+
+
+
+	+--------------------------------------------[EXAMPLE]--------------------------------------------+
+	# Pasting Executor's Face At Their Current Location
+	
+	command /printMyFace:
+		trigger:
+			
+			set {_playerUuid} to (executor's uuid)
+			replace all "-" with "" in {_playerUuid}
+			# As the avator api requires simplified uuid, removing "-" from player's uuid
+			
+			set {_response} to imagePrinter_pasteImageByUrl("https://cravatar.eu/helmavatar/%{_playerUuid}%/8.png", 64, (executor's location), 8, 8)
+			# Pasting the image from api with 64 color samples, resizing to 8x8 pixels at command executor's location
+			# (As the avator api is already returning 8x8 pixels image, the resize parameters at the end could be removed, in this case it's just for showcase)
+			
+			send "%{_response}%" to executor
+			# Send feedback to command executor for example errors
+
+	+-------------------------------------------------------------------------------------------------+
 # String Datas API
 	+---------------------------------------------[USAGE]---------------------------------------------+
 
