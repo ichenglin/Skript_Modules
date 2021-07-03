@@ -3,7 +3,7 @@ on script load:
 
 function imagePrinter_pasteImageByUrl(url: text, samples: number, pasteLocation: location, resizeWidth: number = 0, resizeHeight: number = 0) :: text:
 	set {_asciiEncodedUrl} to imagePrinter_system_encodeUrlWithAscii({_url})
-	set {_schematicRequest} to text from url "https://runtimecloud.com/api/image-to-schematic/%{_asciiEncodedUrl}%/%{_samples}%/%{_resizeWidth}%/%{_resizeHeight}%"
+	set {_schematicRequest} to text from url "https://api.runtimecloud.com/image-to-schematic/%{_asciiEncodedUrl}%/%{_samples}%/%{_resizeWidth}%/%{_resizeHeight}%"
 	map json {_schematicRequest} to {_schematic::*}
 	if {_schematic::error} is true:
 		return "&c[Image Printer] Error: %{_schematic::message}%."
