@@ -1,7 +1,7 @@
-const configuration = {
+let configuration = {
     user: {
         skript_config: "https://playerservers.com/dashboard/filemanager/&action=edit&medit=/plugins/Skript/config.sk&dir=/plugins/Skript",
-        skript_version: "auto",
+        skript_version: "auto", // auto will be replaced by detected skript version
         check_valid: true
     },
     system: {
